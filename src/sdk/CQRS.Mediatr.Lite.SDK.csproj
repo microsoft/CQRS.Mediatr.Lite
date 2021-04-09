@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Pratik Bhattacharya</Authors>
+    <Company>Microsoft</Company>
+    <Product>Field Experience Platform</Product>
+    <Description>Lightweight package to implement CQRS (Command Query Response Segregation) based application.</Description>
+    <RepositoryUrl>https://github.com/microsoft/CQRS.Mediatr.Lite.git</RepositoryUrl>
+    <PackageTags>CQRS CQS Mediatr Command QueryService CommandBus EventBus Events</PackageTags>
+    <SignAssembly>false</SignAssembly>
+    <PackageReleaseNotes>Initial Release for a lightweight package to implement CQRS based applications</PackageReleaseNotes>
+    <NeutralLanguage />
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/microsoft/CQRS.Mediatr.Lite.git</PackageProjectUrl>
+    <PackageId>CQRS.Mediatr.Lite</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>
