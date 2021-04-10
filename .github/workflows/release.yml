@@ -4,7 +4,7 @@ name: Release
 on:
   workflow_dispatch:
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,6 +19,6 @@ jobs:
     - name: Test
       run: dotnet test **/CQRS.Mediatr.Lite.sln --no-restore --verbosity normal
     - name: Pack
-      run: dotnet pack **/CQRS.Mediatr.Lite.SDK.csproj
+      run: dotnet pack src/sdk/CQRS.Mediatr.Lite.SDK.csproj
     - name: Publish
       run: dotnet nuget push **/*.nupkg --api-key ${{ secrets.NuGet_API_Key }} --source https://api.nuget.org/v3/index.json
