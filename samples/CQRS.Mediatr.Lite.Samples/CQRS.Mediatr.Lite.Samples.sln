@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CQRS.Mediatr.Lite.Samples.NetCoreApi", "CQRS.Mediatr.Lite.Samples.NetCoreApi\CQRS.Mediatr.Lite.Samples.NetCoreApi.csproj", "{6FCB311A-666E-4386-B41F-8C803A25E39A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{6833590C-9FB3-4D00-9CFA-72EA730A36AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRS.Mediatr.Lite.SDK", "..\..\src\sdk\CQRS.Mediatr.Lite.SDK.csproj", "{5F1B92B0-01FD-4520-BE76-C521B4F834E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6FCB311A-666E-4386-B41F-8C803A25E39A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FCB311A-666E-4386-B41F-8C803A25E39A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FCB311A-666E-4386-B41F-8C803A25E39A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FCB311A-666E-4386-B41F-8C803A25E39A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1B92B0-01FD-4520-BE76-C521B4F834E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1B92B0-01FD-4520-BE76-C521B4F834E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1B92B0-01FD-4520-BE76-C521B4F834E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1B92B0-01FD-4520-BE76-C521B4F834E2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F1B92B0-01FD-4520-BE76-C521B4F834E2} = {6833590C-9FB3-4D00-9CFA-72EA730A36AA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54D8CACC-2DFB-45EF-8129-2A99B2F10D9D}
+	EndGlobalSection
+EndGlobal
