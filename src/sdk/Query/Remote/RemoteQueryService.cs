@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using CQRS.Mediatr.Lite.Internal;
-using CQRS.Mediatr.Lite.Exceptions;
 using System.Collections.Generic;
+using CQRS.Mediatr.Lite.Exceptions;
 
 namespace CQRS.Mediatr.Lite
 {
@@ -21,7 +22,7 @@ namespace CQRS.Mediatr.Lite
         {
             _queryHandlers = new Dictionary<Type, object>();
             _handlerResolver = handlerResolver;
-            _queries = queries;
+            _queries = queries?.ToDictionary(pair => pair.Key.ToLowerInvariant(), pair => pair.Value);
         }
 
         public Task<object> Query(string queryName, string serializedQuery)

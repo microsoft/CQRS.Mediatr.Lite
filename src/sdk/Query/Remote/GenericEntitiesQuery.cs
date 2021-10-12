@@ -1,5 +1,5 @@
 ﻿namespace CQRS.Mediatr.Lite
-{
+{   
     public abstract class GenericEntitiesQuery<QueryResponse> : Query<GenericEntitiesQueryResponse<QueryResponse>>, IGenericSearchQuery
     {
         public string SearchText { get; set; }

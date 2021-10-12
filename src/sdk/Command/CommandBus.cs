@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CQRS.Mediatr.Lite.Internal;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace CQRS.Mediatr.Lite
 {
@@ -10,12 +11,12 @@ namespace CQRS.Mediatr.Lite
     /// </summary>
     public class CommandBus : ICommandBus
     {
-        private readonly Dictionary<Type, object> _commandHandlerWrappers;
+        private readonly IDictionary<Type, object> _commandHandlerWrappers;
         private readonly IRequestHandlerResolver _requestHandlerResolver;
 
         public CommandBus(IRequestHandlerResolver requestHandlerResolver)
         {
-            _commandHandlerWrappers = new Dictionary<Type, object>();
+            _commandHandlerWrappers = new ConcurrentDictionary<Type, object>();
             _requestHandlerResolver = requestHandlerResolver;
         }
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CQRS.Mediatr.Lite.Internal;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace CQRS.Mediatr.Lite
 {
@@ -10,7 +11,7 @@ namespace CQRS.Mediatr.Lite
     /// </summary>
     public class EventBus : IEventBus
     {
-        private readonly Dictionary<Type, object> _eventHandlerWrappers;
+        private readonly IDictionary<Type, object> _eventHandlerWrappers;
         private readonly IRequestHandlerResolver _requestHandlerResolver;
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace CQRS.Mediatr.Lite
         public EventBus(IRequestHandlerResolver requestHandlerResolver)
         {
             _requestHandlerResolver = requestHandlerResolver;
-            _eventHandlerWrappers = new Dictionary<Type, object>();
+            _eventHandlerWrappers = new ConcurrentDictionary<Type, object>();
         }
 
         /// <summary>
@@ -42,16 +43,21 @@ namespace CQRS.Mediatr.Lite
         }
 
         /// <summary>
-        /// Sends a stream of event to the bus
+        /// Sends a stream of event concurrently to the bus
         /// </summary>
         /// <param name="events" cref="IEnumerable{Event}">Event stream</param>
         /// <returns>Completed Task</returns>
         public async Task Send(IEnumerable<Event> events)
         {
+            if (events == null)
+                return;
+
+            IList<Task> sendEvents = new List<Task>();
             foreach (var @event in events)
             {
-                await Send(@event);
+                sendEvents.Add(Send(@event));
             }
+            await Task.WhenAll(sendEvents);
         }
     }
 }

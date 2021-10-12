@@ -1,8 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CQRS.Mediatr.Lite.Tests.Mocks
 {
     [ExcludeFromCodeCoverage]
+    [Serializable]
     public class MockCommand : Command<MockCommandResult>
     {
         private readonly string _id;
@@ -10,6 +12,9 @@ namespace CQRS.Mediatr.Lite.Tests.Mocks
 
         private readonly bool _shouldFailValidation;
         private readonly string _errorValidationMessage;
+        
+        public MockCommand() { }
+        
         public MockCommand(string commandId)
         {
             _id = commandId;

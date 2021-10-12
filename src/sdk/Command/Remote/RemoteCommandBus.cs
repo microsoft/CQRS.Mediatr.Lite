@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CQRS.Mediatr.Lite.Internal;
 using CQRS.Mediatr.Lite.Exceptions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CQRS.Mediatr.Lite
 {
@@ -20,7 +21,7 @@ namespace CQRS.Mediatr.Lite
         {
             _commandHandlerWrappers = new Dictionary<Type, object>();
             _requestHandlerResolver = requestHandlerResolver;
-            _commands = commands;
+            _commands = commands?.ToDictionary(pair => pair.Key.ToLowerInvariant(), pair => pair.Value);
         }
 
         /// <summary>

@@ -1,8 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CQRS.Mediatr.Lite.Tests.Mocks
 {
     [ExcludeFromCodeCoverage]
+    [Serializable]
     public class MockQuery : Query<MockQueryResponse>
     {
         public override string DisplayName => "Mock Query";
@@ -10,6 +12,8 @@ namespace CQRS.Mediatr.Lite.Tests.Mocks
         private readonly bool _shouldFailValidation;
         private readonly string _errorValidationMessage;
         public override string Id { get => _id; }
+
+        public MockQuery() { }
 
         public MockQuery(string id)
         {

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CQRS.Mediatr.Lite.Internal;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace CQRS.Mediatr.Lite
 {   
@@ -10,7 +11,7 @@ namespace CQRS.Mediatr.Lite
     /// </summary>
     public class QueryService : IQueryService
     {
-        private readonly Dictionary<Type, object> _queryHandlers;
+        private readonly IDictionary<Type, object> _queryHandlers;
         private readonly IRequestHandlerResolver _handlerResolver;
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace CQRS.Mediatr.Lite
         /// <param name="handlerResolver">Resolves Request Handler for every reqeust</param>
         public QueryService(IRequestHandlerResolver handlerResolver)
         {
-            _queryHandlers = new Dictionary<Type, object>();
+            _queryHandlers = new ConcurrentDictionary<Type, object>();
             _handlerResolver = handlerResolver;
         }
         
