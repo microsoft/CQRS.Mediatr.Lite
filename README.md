@@ -1,14 +1,28 @@
-# Project
+# CQRS.Mediatr.Lite
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/microsoft/CQRS.Mediatr.Lite/CI)
+![Nuget](https://img.shields.io/nuget/dt/CQRS.Mediatr.Lite)
+![Nuget](https://img.shields.io/nuget/v/CQRS.Mediatr.Lite)
 
-As the maintainer of this project, please make a few updates:
+CQRS.Mediatr.Lite is a light-weight library to implement CQRS pattern in .NET solutions. The motivation for this library comes from the popular [Mediatr library](https://github.com/jbogard/MediatR).
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+The library enables you to create Commands, Queries, Events and their respective handlers in a decouples fashion. The library also provides some starter code for Aggregate Root, for implementing Domain-Driven designs leveraging the CQRS pattern.
+
+## Setup
+Install the NuGet package: `Install-Package CQRS.Mediatr.Lite`.
+
+## CQRS Basics
+CQRS stands for Command Query Responsibility Segregation. It's a pattern which segregates the read and write pipeline. In complicated scenarios creating separate models and pipelines for reading and writing data help in tackling the complexity. All operations in the system can be divided into 2 caegories
+ - Queries - Used only to read data from the database, and should not make any change to the state.
+ - Commands - Change the state of the system by creating new data, update existing data or delete data from the system.
+References to CQRS
+1. [CQRS - Martin Fowler](https://martinfowler.com/bliki/CQRS.html)
+2. [Apply simplified CQRS and DDD patterns in a microservice](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns)
+
+Complex applications which can benifit from Domain-Driven-Design also draws advantage from CQRS.
+
+## Samples
+https://github.com/microsoft/CQRS.Mediatr.Lite/tree/main/samples/CQRS.Mediatr.Lite.Samples
 
 ## Contributing
 
