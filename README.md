@@ -1,6 +1,7 @@
 # CQRS.Mediatr.Lite
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/microsoft/CQRS.Mediatr.Lite/CI)
+[![Coverage Status](https://coveralls.io/repos/github/microsoft/CQRS.Mediatr.Lite/badge.svg?branch=main)](https://coveralls.io/github/microsoft/CQRS.Mediatr.Lite?branch=main)
 ![Nuget](https://img.shields.io/nuget/dt/CQRS.Mediatr.Lite)
 ![Nuget](https://img.shields.io/nuget/v/CQRS.Mediatr.Lite)
 
