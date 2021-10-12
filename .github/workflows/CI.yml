@@ -19,28 +19,17 @@ jobs:
       with:
         dotnet-version: 5.0.x
     
-    - name: Install minicover
-      run: dotnet tool install --global minicover --version 3.0.6
-    
     - name: Restore dependencies
       run: dotnet restore **/CQRS.Mediatr.Lite.sln
     
     - name: Build
       run: dotnet build **/CQRS.Mediatr.Lite.sln --no-restore
     
-    - name: Instrument
-      run: minicover instrument
-    
     - name: Test
-      run: dotnet test **/CQRS.Mediatr.Lite.sln --no-build --verbosity normal
+      run: dotnet test src/tests/CQRS.Mediatr.Lite.Tests.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
     
-    - name: Uninstrument
-      run: minicover uninstrument
-    
-    - name: Report
-      run: minicover report --threshold 95
-      if: ${{ github.event_name == 'pull_request' }}
-    
-    - name: Report coveralls
-      run: minicover coverallsreport --repo-token ${{ secrets.COVERALLS_TOKEN }} --branch ${{ env.BRANCH_NAME }}
-      if: ${{ github.event_name == 'push' }}
+    - name: Publish to coveralls
+      uses: coverallsapp/github-action@master   
+      with:
+        github-token: ${{ secrets.COVERALLS_TOKEN }} 
+        path-to-lcov: src/tests/TestResults/coverage.info
