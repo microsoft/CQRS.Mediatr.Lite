@@ -4,13 +4,13 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<Authors>Pratik Bhattacharya</Authors>
 		<Company>Microsoft</Company>
-		<Version>1.1.0</Version>
+		<Version>1.2.0</Version>
 		<Product>Field Experience Platform</Product>
 		<Description>Lightweight package to implement CQRS (Command Query Response Segregation) based application.</Description>
 		<RepositoryUrl>https://github.com/microsoft/CQRS.Mediatr.Lite.git</RepositoryUrl>
 		<PackageTags>CQRS CQS Mediatr Command QueryService CommandBus EventBus Events</PackageTags>
 		<SignAssembly>false</SignAssembly>
-		<PackageReleaseNotes>Concurrency bug fix and starter code for DDD Aggregate Roots</PackageReleaseNotes>
+		<PackageReleaseNotes>Added started code for enumeration class</PackageReleaseNotes>
 		<NeutralLanguage />
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/microsoft/CQRS.Mediatr.Lite.git</PackageProjectUrl>

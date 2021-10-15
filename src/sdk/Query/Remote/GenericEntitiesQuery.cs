@@ -1,5 +1,8 @@
-﻿namespace CQRS.Mediatr.Lite
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CQRS.Mediatr.Lite
 {   
+    [ExcludeFromCodeCoverage]
     public abstract class GenericEntitiesQuery<QueryResponse> : Query<GenericEntitiesQueryResponse<QueryResponse>>, IGenericSearchQuery
     {
         public string SearchText { get; set; }
