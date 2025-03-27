@@ -19,12 +19,12 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
-    - name: Manually Install libssl1.1
+    - name: Manually Install libssl1.1 (for Ubuntu 24.04)
       run: |
         sudo apt-get update
-        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-        sudo apt-get install -f  # Fix any missing dependencies
+        wget http://old-releases.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb || true
+        sudo apt-get install -f -y  # Fix missing dependencies
 
     - name: Restore dependencies
       run: dotnet restore **/CQRS.Mediatr.Lite.sln
