@@ -16,7 +16,7 @@ jobs:
       versionSpec: '5.5.0'
       checkLatest: true
   - task: UseDotNet@2
-    displayName: Use .NET Core 5.0.x
+    displayName: Use .NET Core 6.0.x
     inputs:
       packageType: 'sdk'
       version: '5.0.x'
@@ -50,7 +50,7 @@ jobs:
       versionSpec: '5.5.0'
       checkLatest: true
   - task: UseDotNet@2
-    displayName: Use .NET Core 5.0.x
+    displayName: Use .NET Core 6.0.x
     inputs:
       packageType: 'sdk'
       version: '5.0.x'
