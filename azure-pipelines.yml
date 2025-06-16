@@ -20,7 +20,7 @@ jobs:
     inputs:
       packageType: 'sdk'
       version: '6.0.x'
-  - task: NuGetCommand@2
+  - task: DotNetCoreCLI@2
     displayName: Restore Solution
     inputs:
       command: 'restore'
@@ -54,7 +54,7 @@ jobs:
     inputs:
       packageType: 'sdk'
       version: '6.0.x'
-  - task: NuGetCommand@2
+  - task: DotNetCoreCLI@2
     displayName: Restore Solution
     inputs:
       command: 'restore'
