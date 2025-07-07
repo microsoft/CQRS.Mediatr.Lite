@@ -1,68 +1,181 @@
+# Prevent pull request triggers in the pipeline
+pr: none
+
 trigger:
-  none
+  branches:
+    include:
+      - 'main'
+      - 'release/*'
 
-jobs:
-- job: BuildCqrsSdk
-  displayName: Build CQRS SDK
-  pool:
-    vmImage: ubuntu-latest
-  variables:
-    BuildConfiguration: 'Release'
-    BuildPlatform: 'any cpu'
-  steps:
-  - task: NuGetToolInstaller@1
-    displayName: Install NuGet 5.5.1
-    inputs:
-      versionSpec: '5.5.1'
-      checkLatest: true
-  - task: UseDotNet@2
-    displayName: Use .NET Core 6.0.x
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
-  - task: DotNetCoreCLI@2
-    displayName: Restore Solution
-    inputs:
-      command: 'restore'
-      projects: 'src/CQRS.Mediatr.Lite.sln'
-      feedsToUse: 'select'
-  - task: DotNetCoreCLI@2
-    displayName: Build Library Projects
-    inputs:
-      command: 'build'
-      projects: 'src/sdk/CQRS.Mediatr.Lite.SDK.csproj'
-  - task: DotNetCoreCLI@2
-    displayName: Test Projects
-    inputs:
-      command: 'test'
-      projects: '**/*.Tests.csproj'
-- job: BuildSample
-  displayName: Build Sample
-  pool:
-    vmImage: ubuntu-latest
-  variables:
-    BuildConfiguration: 'Release'
-    BuildPlatform: 'any cpu'
-  steps:
-  - task: NuGetToolInstaller@1
-    displayName: Install NuGet 5.5.1
-    inputs:
-      versionSpec: '5.5.1'
-      checkLatest: true
-  - task: UseDotNet@2
-    displayName: Use .NET Core 6.0.x
-    inputs:
-      packageType: 'sdk'
-      version: '6.0.x'
-  - task: DotNetCoreCLI@2
-    displayName: Restore Solution
-    inputs:
-      command: 'restore'
-      projects: 'samples/CQRS.Mediatr.Lite.Samples/CQRS.Mediatr.Lite.Samples.sln'
-      feedsToUse: 'select'
-  - task: DotNetCoreCLI@2
-    displayName: Build Library Projects
-    inputs:
-      command: 'build'
-      projects: 'samples/CQRS.Mediatr.Lite.Samples/CQRS.Mediatr.Lite.Samples.NetCoreApi/CQRS.Mediatr.Lite.Samples.NetCoreApi.csproj'
+# global parameters are configured here and show up in AzDO UI in build queue time. Required for MSBuild and .NET.
+# learn more at https://aka.ms/obpipelines/parameters
+parameters:
+- name: 'debug'
+  displayName: 'Enable debug output'
+  type: boolean
+  default: false
 
+variables:
+- name: BuildPlatform
+  value: 'any cpu'
+- name: BuildConfiguration
+  value: 'release'
+- name: DeploymentType
+  value: 'zipDeploy'
+- name: WindowsContainerImage
+  value: onebranch.azurecr.io/windows/ltsc2019/vse2022:latest
+
+resources:
+  repositories:
+    - repository: onebranchTemplates
+      type: git
+      name: OneBranch.Pipelines/GovernedTemplates
+      ref: refs/heads/main
+
+extends:
+  template: v2/OneBranch.NonOfficial.CrossPlat.yml@onebranchTemplates
+  parameters:
+    customTags: 'ES365AIMigrationTooling'
+    globalSdl: # https://aka.ms/obpipelines/sdl
+      tsa:
+        enabled: false
+
+    stages:
+    - stage: Build
+      jobs:
+      - job: BuildCqrsSdk
+        displayName: Build CQRS SDK
+        pool:
+          type: windows
+        variables:
+          ob_outputDirectory: '$(Build.SourcesDirectory)\out' # this directory is uploaded to Pipeline artifacts, VSODrop, \\reddog, and Cloud Vault
+      
+        steps:
+        - task: NuGetToolInstaller@1
+          displayName: Install NuGet 5.5.1
+          inputs:
+            versionSpec: '5.5.1'
+            checkLatest: true
+
+        - task: UseDotNet@2
+          displayName: Use .NET Core 6.0.x
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'DotNetCore restore'
+          inputs:
+            command: 'restore'
+            projects: 'src/CQRS.Mediatr.Lite.sln'
+            feedsToUse: 'select'
+            vstsFeed: '3d1a556d-2042-4a45-9dae-61808ff33d3b/18496829-a46f-4605-8121-1fd072c0dfd1'
+            includeNuGetOrg: false
+
+        - task: DotNetCoreCLI@2
+          displayName: Build Library Projects
+          inputs:
+            command: 'build'
+            projects: 'src/sdk/CQRS.Mediatr.Lite.SDK.csproj'
+
+        - task: DotNetCoreCLI@2
+          displayName: Test Projects
+          inputs:
+            command: 'test'
+            projects: 'src/tests/*.Tests.csproj'
+        
+        - task: DotNetCoreCLI@2
+          displayName: Publish Library Projects
+          inputs:
+            command: publish
+            publishWebProjects: false
+            projects: 'src/sdk/CQRS.Mediatr.Lite.SDK.csproj'
+            arguments: --output $(Build.SourcesDirectory)/PublishedFolder/Library --configuration $(BuildConfiguration)
+            zipAfterPublish: false
+
+        - task: onebranch.pipeline.signing@1
+          inputs:
+            command: 'sign'
+            signing_profile: 'internal_azure_service'
+            files_to_sign: '**/*.exe;**/*.dll;**/*.ps1'
+            search_root: '$(Build.SourcesDirectory)/PublishedFolder'
+        - task: ArchiveFiles@2
+          displayName: 'Archive Library Projects'
+          inputs:
+            rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/Library'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: 'API.zip'
+            replaceExistingArchive: true
+        - task: CopyFiles@2
+          displayName: "Copy Files for 'Publish Artifact' publish task"
+          condition: succeededOrFailed()
+          inputs:
+            SourceFolder: $(Build.SourcesDirectory)
+            Contents: '**/*.zip'
+            TargetFolder: $(Build.ArtifactStagingDirectory)/drop/
+      - job: BuildSample
+        displayName: Build Sample
+        pool:
+          type: windows
+        variables:
+          ob_outputDirectory: '$(Build.SourcesDirectory)\out' # this directory is uploaded to Pipeline artifacts, VSODrop, \\reddog, and Cloud Vault
+      
+        steps:
+        - task: NuGetToolInstaller@1
+          displayName: Install NuGet 5.5.1
+          inputs:
+            versionSpec: '5.5.1'
+            checkLatest: true
+
+        - task: UseDotNet@2
+          displayName: Use .NET Core 6.0.x
+          inputs:
+            packageType: 'sdk'
+            version: '6.0.x'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'DotNetCore restore'
+          inputs:
+            command: 'restore'
+            projects: 'samples/CQRS.Mediatr.Lite.Samples/CQRS.Mediatr.Lite.Samples.sln'
+            feedsToUse: 'select'
+            vstsFeed: '3d1a556d-2042-4a45-9dae-61808ff33d3b/18496829-a46f-4605-8121-1fd072c0dfd1'
+            includeNuGetOrg: false
+
+        - task: DotNetCoreCLI@2
+          displayName: Build SampleAPI Project
+          inputs:
+            command: 'build'
+            projects: 'samples/CQRS.Mediatr.Lite.Samples/CQRS.Mediatr.Lite.Samples.NetCoreApi/CQRS.Mediatr.Lite.Samples.NetCoreApi.csproj'
+        
+        - task: DotNetCoreCLI@2
+          displayName: Publish SampleAPI Project
+          inputs:
+            command: publish
+            publishWebProjects: false
+            projects: 'samples/CQRS.Mediatr.Lite.Samples/CQRS.Mediatr.Lite.Samples.NetCoreApi/CQRS.Mediatr.Lite.Samples.NetCoreApi.csproj'
+            arguments: --output $(Build.SourcesDirectory)/PublishedFolder/SampleAPI --configuration $(BuildConfiguration)
+            zipAfterPublish: false
+
+        - task: onebranch.pipeline.signing@1
+          inputs:
+            command: 'sign'
+            signing_profile: 'internal_azure_service'
+            files_to_sign: '**/*.exe;**/*.dll;**/*.ps1'
+            search_root: '$(Build.SourcesDirectory)/PublishedFolder'
+        - task: ArchiveFiles@2
+          displayName: 'Archive SampleAPI Project'
+          inputs:
+            rootFolderOrFile: '$(Build.SourcesDirectory)/PublishedFolder/SampleAPI'
+            includeRootFolder: false
+            archiveType: 'zip'
+            archiveFile: 'API.zip'
+            replaceExistingArchive: true
+        - task: CopyFiles@2
+          displayName: "Copy Files for 'Publish Artifact' publish task"
+          condition: succeededOrFailed()
+          inputs:
+            SourceFolder: $(Build.SourcesDirectory)
+            Contents: '**/*.zip'
+            TargetFolder: $(Build.ArtifactStagingDirectory)/drop/
