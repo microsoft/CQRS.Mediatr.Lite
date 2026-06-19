@@ -23,7 +23,7 @@ variables:
 - name: DeploymentType
   value: 'zipDeploy'
 - name: WindowsContainerImage
-  value: onebranch.azurecr.io/windows/ltsc2019/vse2022:latest
+  value: onebranch.azurecr.io/windows/ltsc2022/vse2022:latest
 
 resources:
   repositories:
@@ -39,6 +39,12 @@ extends:
     globalSdl: # https://aka.ms/obpipelines/sdl
       tsa:
         enabled: false
+    featureFlags:
+      WindowsHostVersion:
+        Network: KS4
+        Version: 2022
+      networkisolation:
+        policy: Permissive,CFSClean,CFSClean2
 
     stages:
     - stage: Build
