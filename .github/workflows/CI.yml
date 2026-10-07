@@ -28,7 +28,7 @@ jobs:
       run: dotnet test src/tests/CQRS.Mediatr.Lite.Tests.csproj --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov
     
     - name: Publish to coveralls
-      uses: coverallsapp/github-action@master   
+      uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }} 
         path-to-lcov: src/tests/TestResults/coverage.info
